@@ -14,7 +14,7 @@ namespace Serie_I
              while (true)
             {
                 b = r;
-                r = a % b;
+                r = a % b;   
                 a = b;
                 if (r ==0) { return b; }
             }
