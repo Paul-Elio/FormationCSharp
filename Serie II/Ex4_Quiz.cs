@@ -42,9 +42,8 @@ namespace Serie_II
                 Console.Write($"{i}. {qcm.Answers[i-1]} ");
             }
             Console.WriteLine();
-            bool rep = false;
             int number;
-            while(!rep)
+            while(true)
             {
                 do
                 {
@@ -56,12 +55,15 @@ namespace Serie_II
                 {
                     return qcm.Weight;
                 }
+                else if ((0 <= number) && (number <= qcm.Answers.Length))
+                {
+                    return 0;
+                }
                 else
                 {
                     Console.WriteLine("Réponse invalide !");
                 }
             }           
-            return -1;
         }
 
         public static bool QcmValidity(Qcm qcm)
