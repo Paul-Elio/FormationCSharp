@@ -51,32 +51,105 @@ namespace Serie_IV
 
         public int LettersCount(string code)
         {
-            //TODO
-            return -1;
+            
+            return code.Replace("...","$").Split('$').Length ;
         }
 
         public int WordsCount(string code)
         {
-            //TODO
-            return -1;
+            return code.Replace(".....", "$").Split('$').Length;
         }
 
         public string MorseTranslation(string code)
         {
-            //TODO
-            return string.Empty;
+            string translation = "";
+            foreach (string mot in code.Replace(".....","$").Split('$'))
+            {
+                foreach (string lettre in mot.Replace("...","$").Split('$'))
+                {
+                    try
+                    {
+                        translation += _alphabet[lettre];
+                    }
+                    catch (Exception)
+                    {
+                        translation += "+";
+                    }
+                    
+                }
+                translation += " ";
+            }
+            return translation ;
         }
 
         public string EfficientMorseTranslation(string code)
         {
-            //TODO
-            return string.Empty;
+            string morse = "";
+            int ptsl = 0;
+            foreach (char car in code)
+            {
+
+                if (car == '.')
+                {
+                    ptsl += 1;
+                }
+                else
+                {
+                    if (ptsl == 0)
+                    {
+                        morse += car;
+                    }
+                    else if (ptsl ==1 || ptsl ==2)
+                    {
+                        morse += "." + car;
+                        ptsl = 0;
+
+                    }
+                    else if (ptsl == 3 || ptsl == 4)
+                    {
+                        morse += "..." + car;
+                        ptsl = 0;
+
+                    }
+                    else if (ptsl >= 5)
+                    {
+                        morse += "....." +car;
+                        ptsl = 0;
+
+                    }
+                }
+            }
+            return MorseTranslation(morse);
         }
 
         public string MorseEncryption(string sentence)
         {
-            //TODO
-            return string.Empty;
+            string morse = "";
+            foreach (string mot in sentence.Split(' '))
+            {
+                foreach (char letter in mot)
+                {
+                    morse += GetMorseKey(letter);
+                    morse += "...";
+                }
+                morse += "..";
+            }
+            return morse.Substring(0,morse.Length-5);
+        }
+
+        public string GetMorseKey(char letter)
+        {
+            if (_alphabet.ContainsValue(letter))
+            {
+                foreach (string symbole in _alphabet.Keys)
+                {
+                    if (_alphabet[symbole] == letter)
+                    {
+                        return symbole;
+                    }
+                }
+            }
+            return ("+");
         }
     }
 }

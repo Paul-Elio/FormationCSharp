@@ -22,6 +22,7 @@ namespace Serie_IV
             Console.WriteLine($"{morse} : {m.MorseTranslation(morse)}");
             string error = "=...=.===.=...==...===.===.===...=.===.=";
             Console.WriteLine(error + " : " + m.MorseTranslation(error));
+            
             // Codes imparfaits en morse
             Console.WriteLine($"{morse} : {m.EfficientMorseTranslation(morse)}");
             string imperfectMorse = "===..=..===..=....===.===.===...===.=.=...=.....";
@@ -29,8 +30,9 @@ namespace Serie_IV
             // Encodage en morse
             string sentence = "CODE MORSE";
             Console.WriteLine($"{sentence} : {m.MorseEncryption(sentence)}");
+            
             #endregion
-
+            /**/
             #region Exercice II - Contrôle des parenthèses
             Console.WriteLine("--------------------------------------");
             Console.WriteLine("Exercice II - Contrôle des parenthèses");
@@ -47,7 +49,7 @@ namespace Serie_IV
             brackets = "{Azerty[uiop]qsdfg(hkl<m(wxcvb)n&é\"'(-è_çà)=}";
             Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
             #endregion
-
+            /**
             #region Exercice III - Liste des contacts téléphoniques
             Console.WriteLine("-----------------------------------------------");
             Console.WriteLine("Exercice III - Liste des contacts téléphoniques");
@@ -79,7 +81,7 @@ namespace Serie_IV
             bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
             bs.DisplayMeetings();
             #endregion
-
+            /**/
             // Keep the console window open
             Console.WriteLine("----------------------");
             Console.WriteLine("Press any key to exit.");
