@@ -9,38 +9,81 @@ namespace Serie_IV
 {
     public class PhoneBook
     {
+        private Dictionary<string,string> phonebook = new Dictionary<string,string>();
         private bool IsValidPhoneNumber(string phoneNumber)
         {
-            //TODO
-            return false;
+            if (!(phoneNumber.Length == 10))
+            {
+                return false;
+            }
+            if (!(phoneNumber[0]=='0' && phoneNumber[1]!= '0'))
+            {
+                return false;
+            }
+            return true;
         }
 
         public bool ContainsPhoneContact(string phoneNumber)
         {
-            //TODO
-            return false;
+            try
+            {
+                string a = phonebook[phoneNumber];
+            }
+            catch (Exception)
+            {
+                //Console.WriteLine($"Phone Number : {phoneNumber} not in PhoneBook !");
+                return false;
+            }
+            return true;
         }
 
         public void PhoneContact(string phoneNumber)
         {
-            //TODO
+            if (ContainsPhoneContact(phoneNumber))
+            {
+                Console.WriteLine($"{phoneNumber} : {phonebook[phoneNumber]}");
+            }
         }
 
         public bool AddPhoneNumber(string phoneNumber, string name)
         {
-            //TODO
+            if (name == "")
+            {
+                return false;
+            }
+            if (!ContainsPhoneContact(phoneNumber))
+            {
+                phonebook.Add(phoneNumber, name);
+                return true;
+            }
             return false;
         }
 
         public bool DeletePhoneNumber(string phoneNumber)
         {
-            //TODO
+            if (ContainsPhoneContact(phoneNumber))
+            {
+                phonebook.Remove(phoneNumber);
+                return true;
+            }
             return false;
         }
 
         public void DisplayPhoneBook()
         {
-            //TODO
+            if (phonebook.Count == 0)
+            {
+                Console.WriteLine("Pas de numéros téléphoniques");
+                return;
+            }
+            Console.WriteLine("Annuaire téléphonique :");
+            Console.WriteLine("-----------------------");
+            foreach (string phonenumber in phonebook.Keys)
+            {
+                PhoneContact(phonenumber);
+            }
+            Console.WriteLine("-----------------------");
+            return;
         }
     }
 }

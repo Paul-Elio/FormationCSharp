@@ -49,7 +49,7 @@ namespace Serie_IV
             brackets = "{Azerty[uiop]qsdfg(hkl<m(wxcvb)n&é\"'(-è_çà)=}";
             Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
             #endregion
-            /**
+            /**/
             #region Exercice III - Liste des contacts téléphoniques
             Console.WriteLine("-----------------------------------------------");
             Console.WriteLine("Exercice III - Liste des contacts téléphoniques");
@@ -68,7 +68,7 @@ namespace Serie_IV
             pb.DeletePhoneNumber("0123456789");
             pb.DisplayPhoneBook();
             #endregion
-
+            /**
             #region Exercice IV - Emploi du temps professionnel
             Console.WriteLine("-------------------------------------------");
             Console.WriteLine("Exercice IV - Emploi du temps professionnel");
