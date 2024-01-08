@@ -50,64 +50,7 @@ namespace Percolation
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
-            List<KeyValuePair<int, int>> voisins = new List<KeyValuePair<int, int>>();
-            /** version bourrine non optimale
-            if (i>0 && j>0 && i<_size-1 && j < _size - 1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i , j+1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i , j-1));
-            }
-            else if (i==0 && j> 0 && j<_size-1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
-            }
-            else if (i == _size-1 && j > 0 && j < _size - 1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
-            }
-            else if (j == 0 && i > 0 && i < _size - 1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-            }
-            else if (j == _size - 1 && i > 0 && i < _size - 1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-            }
-            else if (j==0 && i == 0)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-            }
-            else if (j == 0 && i == _size-1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-            }
-            else if (j == _size-1 && i == 0)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
-                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
-            }
-            else if (j == _size - 1 && i == _size - 1)
-            {
-                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
-                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
-            }
-            else
-            {
-                Console.WriteLine("on ne devrait pas être là");
-            }
-            /**/
+            List<KeyValuePair<int, int>> voisins = new List<KeyValuePair<int, int>>();       
             if (!(i==0))
             {
                 voisins.Add(new KeyValuePair<int, int>(i - 1, j));
@@ -146,6 +89,7 @@ namespace Percolation
                     }
                 }
             }
+            // Si on a rempli la case alors on regarde parmis ses voisins open pour les rempmlir.
             if (_full[i, j])
             {
                 foreach (KeyValuePair<int, int> cell in voisins)

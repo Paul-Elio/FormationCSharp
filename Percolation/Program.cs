@@ -26,7 +26,6 @@ namespace Percolation
  * Réponses aux questions :
  * 3) b) Dans le pire des cas on ouvre toutes les cases de la grilles sauf celles d'une ligne qui est ouverte à la fin
  *       dans ce cas là le nombre d'opération serai en O((N-1)^2) pour une grille de taille NxN 
- *    c) Plus la taille de la grille sera grande, moins on a de chance d'esquiver une même ligne à chaque fois.
+ *    c) Plus la taille de la grille sera grande, moins on a de chance d'esquiver une même ligne à chaque fois comme l'ouverture des cases est Random.
  *    
- *   
  */

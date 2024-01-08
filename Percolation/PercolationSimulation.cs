@@ -24,6 +24,14 @@ namespace Percolation
 
     public class PercolationSimulation
     {
+        /// <summary>
+        /// <param name="size"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        /// Calcul des performance des percolations.
+        /// Retourn un PclData rempli des bonnes valeur de Mean STD et Fraction 
+        /// (ici Fraction = Std / Mean )
+        /// </summary>
         public PclData MeanPercolationValue(int size, int t)
         {
             double mean = 0;
@@ -43,6 +51,12 @@ namespace Percolation
             return pclData;
         }
 
+        /// <summary>
+        /// <param name="size"></param>
+        /// Ouverture pas à pas des cases de la grille de manière random.
+        /// Stop si la percolation est réussie.
+        /// Retourne le taux de cases ouverte sur le nombre total de case
+        /// <summary>
         public double PercolationValue(int size)
         {
             double count = 0;
