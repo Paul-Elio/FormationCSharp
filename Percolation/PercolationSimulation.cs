@@ -39,13 +39,13 @@ namespace Percolation
             PclData pclData = new PclData();
             pclData.Mean = mean;
             pclData.StandardDeviation = ecty;
-            pclData.Fraction = ecty == 0 ? -1 : (double)(mean / ecty);
+            pclData.Fraction = mean == 0 ? -1 : (ecty / mean);
             return pclData;
         }
 
         public double PercolationValue(int size)
         {
-            int count = 0;
+            double count = 0;
             Percolation perco = new Percolation(size);
             var ran = new Random();
             while (!perco.Percolate())

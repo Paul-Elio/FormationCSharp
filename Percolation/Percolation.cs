@@ -38,20 +38,20 @@ namespace Percolation
         // on regarde si la dernière ligne du tableau contien une case d'eau
         public bool Percolate()
         {
-            for (int i=0; i<_size; i++)
+            for (int j=0; j<_size; j++)
             {
-                if (_full[_size - 1, i])
+                if (_full[_size - 1, j])
                 {
                     return true;
                 }
             }
             return false;
-
         }
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
             List<KeyValuePair<int, int>> voisins = new List<KeyValuePair<int, int>>();
+            /** version bourrine non optimale
             if (i>0 && j>0 && i<_size-1 && j < _size - 1)
             {
                 voisins.Add(new KeyValuePair<int, int>(i - 1, j));
@@ -106,6 +106,23 @@ namespace Percolation
             else
             {
                 Console.WriteLine("on ne devrait pas être là");
+            }
+            /**/
+            if (!(i==0))
+            {
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+            }
+            if (!(i == _size-1))
+            {
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+            }
+            if (!(j == 0))
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j-1));
+            }
+            if (!(j == _size - 1))
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j+1));
             }
             return voisins;
         }
