@@ -68,7 +68,7 @@ namespace Serie_IV
             pb.DeletePhoneNumber("0123456789");
             pb.DisplayPhoneBook();
             #endregion
-            /**
+            /**/
             #region Exercice IV - Emploi du temps professionnel
             Console.WriteLine("-------------------------------------------");
             Console.WriteLine("Exercice IV - Emploi du temps professionnel");
@@ -76,8 +76,9 @@ namespace Serie_IV
 
             BusinessSchedule bs = new BusinessSchedule();
             bs.SetRangeOfDates(new DateTime(2021, 4, 1), new DateTime(2021, 4, 30));
+            bs.AddBusinessMeeting(new DateTime(2021, 3, 1, 0, 0, 0), new TimeSpan(1, 0, 0));
             bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 0, 0), new TimeSpan(1, 0, 0));
-            bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 15, 0, 0), new TimeSpan(1, 0, 0));
+            bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 16, 0, 0), new TimeSpan(1, 0, 0));
             bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
             bs.DisplayMeetings();
             #endregion
