@@ -27,27 +27,119 @@ namespace Percolation
 
         public bool IsOpen(int i, int j)
         {
-            return false;
+            return _open[i,j];
         }
 
         private bool IsFull(int i, int j)
         {
-            return false;
+            return _full[i,j];
         }
 
+        // on regarde si la dernière ligne du tableau contien une case d'eau
         public bool Percolate()
         {
+            for (int i=0; i<_size; i++)
+            {
+                if (_full[_size - 1, i])
+                {
+                    return true;
+                }
+            }
             return false;
+
         }
 
         private List<KeyValuePair<int, int>> CloseNeighbors(int i, int j)
         {
-            return null;
+            List<KeyValuePair<int, int>> voisins = new List<KeyValuePair<int, int>>();
+            if (i>0 && j>0 && i<_size-1 && j < _size - 1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i , j+1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i , j-1));
+            }
+            else if (i==0 && j> 0 && j<_size-1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
+            }
+            else if (i == _size-1 && j > 0 && j < _size - 1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
+            }
+            else if (j == 0 && i > 0 && i < _size - 1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+            }
+            else if (j == _size - 1 && i > 0 && i < _size - 1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+            }
+            else if (j==0 && i == 0)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+            }
+            else if (j == 0 && i == _size-1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j + 1));
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+            }
+            else if (j == _size-1 && i == 0)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
+                voisins.Add(new KeyValuePair<int, int>(i + 1, j));
+            }
+            else if (j == _size - 1 && i == _size - 1)
+            {
+                voisins.Add(new KeyValuePair<int, int>(i, j - 1));
+                voisins.Add(new KeyValuePair<int, int>(i - 1, j));
+            }
+            else
+            {
+                Console.WriteLine("on ne devrait pas être là");
+            }
+            return voisins;
         }
 
         public void Open(int i, int j)
         {
-
+            _open[i, j] = true;
+            List<KeyValuePair<int, int>> voisins = CloseNeighbors(i, j);
+            if (i == 0)
+            {
+                _full[i, j] = true;
+            }
+            else
+            {
+                foreach (KeyValuePair<int, int> cell in voisins)
+                {
+                    if (IsFull(cell.Key, cell.Value))
+                    {
+                        _full[i, j] = true;
+                        break;
+                    }
+                }
+            }
+            if (_full[i, j])
+            {
+                foreach (KeyValuePair<int, int> cell in voisins)
+                {
+                    if (IsOpen(cell.Key, cell.Value) && !IsFull(cell.Key, cell.Value))
+                    {
+                        Open(cell.Key, cell.Value);
+                    }
+                }
+            }
+            return;
         }
     }
 }

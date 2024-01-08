@@ -26,12 +26,40 @@ namespace Percolation
     {
         public PclData MeanPercolationValue(int size, int t)
         {
-            return new PclData();
+            double mean = 0;
+            double ecty = 0;
+            for (int i = 0; i< t; i++)
+            {
+                double temp = PercolationValue(size);
+                mean += temp;
+                ecty += temp * temp;
+            }
+            mean = mean / t;
+            ecty = Math.Sqrt((ecty - mean * mean)/(double)t);
+            PclData pclData = new PclData();
+            pclData.Mean = mean;
+            pclData.StandardDeviation = ecty;
+            pclData.Fraction = ecty == 0 ? -1 : (double)(mean / ecty);
+            return pclData;
         }
 
         public double PercolationValue(int size)
         {
-            return 0;
+            int count = 0;
+            Percolation perco = new Percolation(size);
+            var ran = new Random();
+            while (!perco.Percolate())
+            {
+                int i = ran.Next(0, size);
+                int j = ran.Next(0, size);
+                if (!perco.IsOpen(i, j))
+                {
+                    perco.Open(i, j);
+                    count += 1;
+                }
+            }
+            double frac = (double)(count / (double)(size * size));
+            return frac;
         }
     }
 }
