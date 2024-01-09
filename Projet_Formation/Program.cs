@@ -19,6 +19,7 @@ namespace Projet_Formation
             banque.Depot(0, 500);
             banque.Retrait(1, 50);
             banque.Retrait(2, 500);
+            banque.Virement(33, 0, 2);
             banque.Display_comptes();
             // Keep the console window open
             Console.WriteLine("----------------------");

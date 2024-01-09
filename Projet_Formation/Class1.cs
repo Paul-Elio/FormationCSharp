@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Projet_Formation
 {
@@ -30,15 +31,7 @@ namespace Projet_Formation
 
         public bool Existe_compte(uint num_cpt)
         {
-            try
-            {
-                Compte cpt = Banque[num_cpt];
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            return Banque.ContainsKey(num_cpt);
         }
 
         public void Create_compte(uint num_cpt, decimal solde = 0)
@@ -111,14 +104,21 @@ namespace Projet_Formation
 
         public bool Virement(decimal montant, uint expe, uint dest)
         {
+            if(Existe_compte(expe) && Existe_compte(dest))
+            {
+                if (Retrait(expe, montant))
+                {
+                    return Depot(dest, montant); ;
+                }
+            }
             return false;
         }
-        public bool Prelevement(decimal montant, uint expe, uint dest)
-        {
-            return false;
-        }
+
         public void Gestion(string compte, string transac, string cr)
         {
+            string[] comptes = File.ReadAllLines(compte);
+            string[] transacs = File.ReadAllLines(transac);
+
             return;
         }
         public void Display_comptes()
