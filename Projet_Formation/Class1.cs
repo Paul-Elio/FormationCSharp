@@ -104,7 +104,7 @@ namespace Projet_Formation
 
         public bool Virement(decimal montant, uint expe, uint dest)
         {
-            if(Existe_compte(expe) && Existe_compte(dest))
+            if (Existe_compte(expe) && Existe_compte(dest))
             {
                 if (Retrait(expe, montant))
                 {
@@ -118,7 +118,78 @@ namespace Projet_Formation
         {
             string[] comptes = File.ReadAllLines(compte);
             string[] transacs = File.ReadAllLines(transac);
+            foreach (string line in comptes)
+            {
+                try
+                {
+                    uint num_cpt;
+                    uint.TryParse(line.Split(';')[0], out num_cpt);
+                    decimal solde;
+                    if (!decimal.TryParse(line.Split(';')[1], out solde))
+                    {
+                        solde = 0;
+                    }
+                    Create_compte(num_cpt, solde);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Compte : {line} invalide !");
+                }
+            }
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("Etat des comptes avant traitement :");
+            Display_comptes();
+            foreach (string line in transacs)
+            {
+                uint trid;
+                decimal montant;
+                uint expe;
+                uint dest;
+                Transaction tr = new Transaction();
+                if (uint.TryParse(line.Split(';')[0], out trid) && decimal.TryParse(line.Split(';')[1], out montant) && uint.TryParse(line.Split(';')[2], out expe) && uint.TryParse(line.Split(';')[3], out dest))
+                {
+                    tr.Transaction_ID = trid;
+                    tr.Montant = montant;
+                    tr.Expediteur = expe;
+                    tr.Destinataire = dest;
+                    tr.Statut = false;
+                }
+                else
+                {
+                    Console.WriteLine($"Transaction : {line} invalide !");
+                    continue;
+                }
+                if (tr.Expediteur == 0)
+                {
+                    tr.Statut = Depot(tr.Destinataire, tr.Montant);
+                }
+                else if (tr.Destinataire == 0)
+                {
+                    tr.Statut = Retrait(tr.Expediteur, tr.Montant);
+                }
+                else
+                {
+                    tr.Statut = Virement(tr.Montant, tr.Expediteur, tr.Destinataire);
+                }
+                Historique_Banque.Add(tr);
+            }
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("Etat des comptes après traitement :");
+            Display_comptes();
+            Console.WriteLine("----------------------------------------------");
+            Compte_rendu(cr);
+            return;
+        }
 
+        public void Compte_rendu(string cr)
+        {
+            List<string> compte_rendu = new List<string>(); 
+            foreach (Transaction tr in Historique_Banque)
+            {
+                string statut = tr.Statut ? "OK" : "KO";
+                compte_rendu.Add($"{tr.Transaction_ID};{statut}");
+            }
+            File.WriteAllLines(cr, compte_rendu.ToArray());
             return;
         }
         public void Display_comptes()
@@ -129,6 +200,6 @@ namespace Projet_Formation
             }
             return;
         }
-        
+
     }
 }
