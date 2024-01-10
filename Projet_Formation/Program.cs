@@ -22,10 +22,14 @@ namespace Projet_Formation
             //banque.Retrait(2, 500);
             //banque.Virement(33, 0, 2);
             string path = Directory.GetCurrentDirectory();
-            string comptes = path + @"\Comptes.csv";
-            string transactions = path + @"\Transactions.csv";
-            string cr = path + @"\cr.csv";
-            banque.Gestion(comptes,transactions,cr);
+            #region Files
+            // Input
+            string acctPath = path + @"\Comptes_1.csv";
+            string trxnPath = path + @"\Transactions_1.csv";
+            // Output
+            string sttsPath = path + @"\Statut_1.csv";
+            #endregion
+            banque.Gestion(acctPath, trxnPath, sttsPath);
             // Keep the console window open
             Console.WriteLine("----------------------");
             Console.WriteLine("Press any key to exit.");

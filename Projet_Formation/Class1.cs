@@ -154,7 +154,7 @@ namespace Projet_Formation
                 }
                 if (Existe_transaction(tr.Transaction_ID))
                 {
-                    tr.Statut=false;
+                    tr.Statut = false;
                 }
                 else if (tr.Expediteur == 0)
                 {
@@ -180,7 +180,7 @@ namespace Projet_Formation
 
         public void Compte_rendu(string cr)
         {
-            List<string> compte_rendu = new List<string>(); 
+            List<string> compte_rendu = new List<string>();
             foreach (Transaction tr in Historique_Banque)
             {
                 string statut = tr.Statut ? "OK" : "KO";
