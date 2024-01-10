@@ -48,7 +48,7 @@ namespace Projet_Formation
 
         public void Create_compte(uint num_cpt, decimal solde = 0)
         {
-            if (!Existe_compte(num_cpt))
+            if (!Existe_compte(num_cpt) && solde>=0)
             {
                 Compte cpt = new Compte();
                 cpt.Solde = solde;
@@ -60,7 +60,7 @@ namespace Projet_Formation
 
         public bool Depot(uint num_cpt, decimal montant)
         {
-            if (montant >= 0)
+            if (montant > 0)
             {
                 if (Existe_compte(num_cpt))
                 {
@@ -75,7 +75,7 @@ namespace Projet_Formation
 
         public bool Retrait(uint num_cpt, decimal montant)
         {
-            if (montant >= 0)
+            if (montant > 0)
             {
                 if (Existe_compte(num_cpt))
                 {
