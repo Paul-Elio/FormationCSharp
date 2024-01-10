@@ -34,6 +34,18 @@ namespace Projet_Formation
             return Banque.ContainsKey(num_cpt);
         }
 
+        public bool Existe_transaction(uint trid)
+        {
+            foreach (Transaction tr in Historique_Banque)
+            {
+                if (tr.Transaction_ID == trid)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void Create_compte(uint num_cpt, decimal solde = 0)
         {
             if (!Existe_compte(num_cpt))
@@ -87,7 +99,7 @@ namespace Projet_Formation
             int nb_tr = cpt.Historique.Count;
             if (nb_tr >= 9)
             {
-                for (int i = 0; i < 9; i++)
+                for (int i = 1; i <= 9; i++)
                 {
                     sum += Banque[num_cpt].Historique[nb_tr - i];
                 }
@@ -116,29 +128,9 @@ namespace Projet_Formation
 
         public void Gestion(string compte, string transac, string cr)
         {
-            string[] comptes = File.ReadAllLines(compte);
+            Chargement_comptes(compte);
+
             string[] transacs = File.ReadAllLines(transac);
-            foreach (string line in comptes)
-            {
-                try
-                {
-                    uint num_cpt;
-                    uint.TryParse(line.Split(';')[0], out num_cpt);
-                    decimal solde;
-                    if (!decimal.TryParse(line.Split(';')[1], out solde))
-                    {
-                        solde = 0;
-                    }
-                    Create_compte(num_cpt, solde);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine($"Compte : {line} invalide !");
-                }
-            }
-            Console.WriteLine("----------------------------------------------");
-            Console.WriteLine("Etat des comptes avant traitement :");
-            Display_comptes();
             foreach (string line in transacs)
             {
                 uint trid;
@@ -146,7 +138,8 @@ namespace Projet_Formation
                 uint expe;
                 uint dest;
                 Transaction tr = new Transaction();
-                if (uint.TryParse(line.Split(';')[0], out trid) && decimal.TryParse(line.Split(';')[1], out montant) && uint.TryParse(line.Split(';')[2], out expe) && uint.TryParse(line.Split(';')[3], out dest))
+                string[] elem = line.Replace('.', ',').Split(';');
+                if (uint.TryParse(elem[0], out trid) && decimal.TryParse(elem[1], out montant) && uint.TryParse(elem[2], out expe) && uint.TryParse(elem[3], out dest))
                 {
                     tr.Transaction_ID = trid;
                     tr.Montant = montant;
@@ -159,7 +152,11 @@ namespace Projet_Formation
                     Console.WriteLine($"Transaction : {line} invalide !");
                     continue;
                 }
-                if (tr.Expediteur == 0)
+                if (Existe_transaction(tr.Transaction_ID))
+                {
+                    tr.Statut=false;
+                }
+                else if (tr.Expediteur == 0)
                 {
                     tr.Statut = Depot(tr.Destinataire, tr.Montant);
                 }
@@ -192,6 +189,34 @@ namespace Projet_Formation
             File.WriteAllLines(cr, compte_rendu.ToArray());
             return;
         }
+
+        public void Chargement_comptes(string compte)
+        {
+            string[] comptes = File.ReadAllLines(compte);
+            foreach (string line in comptes)
+            {
+                try
+                {
+                    uint num_cpt;
+                    uint.TryParse(line.Split(';')[0], out num_cpt);
+                    decimal solde;
+                    if (!decimal.TryParse(line.Replace('.', ',').Split(';')[1], out solde))
+                    {
+                        solde = 0;
+                    }
+                    Create_compte(num_cpt, solde);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Compte : {line} invalide !");
+                }
+            }
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("Etat des comptes avant traitement :");
+            Display_comptes();
+            return;
+        }
+
         public void Display_comptes()
         {
             foreach (KeyValuePair<uint, Compte> compte in Banque)
