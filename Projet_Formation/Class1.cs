@@ -197,12 +197,18 @@ namespace Projet_Formation
             {
                 try
                 {
+                    string[] elem = line.Replace('.', ',').Split(';');
                     uint num_cpt;
-                    uint.TryParse(line.Split(';')[0], out num_cpt);
+                    uint.TryParse(elem[0], out num_cpt);
                     decimal solde;
-                    if (!decimal.TryParse(line.Replace('.', ',').Split(';')[1], out solde))
+                    if (elem[1] == "")
                     {
                         solde = 0;
+                    }
+                    else if (!decimal.TryParse(elem[1], out solde))
+                    {
+                        Console.WriteLine($"Compte {line} invalide !");
+                        continue;
                     }
                     Create_compte(num_cpt, solde);
                 }
