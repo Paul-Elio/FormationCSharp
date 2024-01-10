@@ -205,7 +205,7 @@ namespace Projet_Formation
                     {
                         solde = 0;
                     }
-                    else if (!decimal.TryParse(elem[1], out solde))
+                    else if (!decimal.TryParse(elem[1], out solde) || solde<0)
                     {
                         Console.WriteLine($"Compte {line} invalide !");
                         continue;
