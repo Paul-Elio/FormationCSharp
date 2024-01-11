@@ -21,9 +21,6 @@ namespace Projet_Formation
         public List<uint> Comptes { get; set; }
         public decimal Frai_banquaires { get; set; }
         public int tr_max { get; set; }
-        public int Code_ope { get; set; } // Code 1 : Création de compte
-                                          // Code 2 : Cloture de compte
-                                          // Code 3 : Cession d'un compte =   Réception de compte 
     }
     public struct Transaction
     {

@@ -152,7 +152,7 @@ namespace Projet_Formation
         public bool Plafond1_atteint(uint num_cpt, decimal montant)
         {
             int tr_max = 0;
-            foreach(uint cli in Clients.Keys)
+            foreach (uint cli in Clients.Keys)
             {
                 if (Clients[cli].Comptes.Any(x => x == num_cpt))
                 {
@@ -162,9 +162,9 @@ namespace Projet_Formation
             decimal sum = montant;
             Compte cpt = Banque[num_cpt];
             int nb_tr = cpt.Historique.Count;
-            if (nb_tr >= tr_max-1)
+            if (nb_tr >= tr_max - 1)
             {
-                for (int i = 1; i <= tr_max; i++)
+                for (int i = 1; i <= tr_max - 1; i++)
                 {
                     sum += Banque[num_cpt].Historique[nb_tr - i];
                 }
@@ -182,9 +182,9 @@ namespace Projet_Formation
         {
             decimal sum = montant;
             Compte cpt = Banque[num_cpt];
-            int i= cpt.Histo_transac.Count-1;
+            int i = cpt.Histo_transac.Count - 1;
             TimeSpan week = TimeSpan.FromDays(7);
-            while (date - cpt.Histo_transac[i] <= week)
+            while (i >= 0 && date - cpt.Histo_transac[i] <= week)
             {
                 sum += cpt.Historique[i];
                 i--;
@@ -198,7 +198,12 @@ namespace Projet_Formation
                 if (Retrait(expe, montant, date))
                 {
                     decimal frai_banquaire = 0;
-                    foreach (uint client_id in Clients.Keys)
+                    List<uint> list_client = new List<uint>();
+                    foreach (uint id in Clients.Keys)
+                    {
+                        list_client.Add(id);
+                    }
+                    foreach (uint client_id in list_client)
                     {
                         if (Clients[client_id].Comptes.Any(x => x == expe))
                         {
@@ -210,12 +215,12 @@ namespace Projet_Formation
                             Clients[client_id] = cli;
                         }
                     }
-                    return Depot(dest, montant-frai_banquaire); 
+                    return Depot(dest, montant - frai_banquaire);
                 }
             }
             return false;
         }
-        public void Traitement_transaction(Transaction tr)
+        public void Traitement_transaction(ref Transaction tr)
         {
             tr.Statut = false;
             if (Existe_transaction(tr.Transaction_ID))
@@ -228,7 +233,7 @@ namespace Projet_Formation
             }
             else if (tr.Destinataire == 0)
             {
-                tr.Statut = Retrait(tr.Expediteur, tr.Montant, tr.Date );
+                tr.Statut = Retrait(tr.Expediteur, tr.Montant, tr.Date);
             }
             else
             {
@@ -237,11 +242,11 @@ namespace Projet_Formation
             Historique_Banque.Add(tr);
             return;
         }
-        public void Traitement_operation(Operation ope)
+        public void Traitement_operation(ref Operation ope)
         {
             if (ope.Sortie == 0)
             {
-                ope.Statut =Add_compte_client(ope.Entree, ope.Num_cpt, ope.Date_ope, ope.Solde_init);
+                ope.Statut = Add_compte_client(ope.Entree, ope.Num_cpt, ope.Date_ope, ope.Solde_init);
             }
             else if (ope.Entree == 0)
             {
@@ -267,11 +272,11 @@ namespace Projet_Formation
                     int tr_max;
                     int.TryParse(elem[2], out tr_max);
                     bool type = true;
-                    if (elem[1]== "Particulier" || elem[1] == "Entreprise")
+                    if (elem[1] == "Particulier" || elem[1] == "Entreprise")
                     {
                         type = elem[1] == "Particulier";
                     }
-                   else
+                    else
                     {
                         Console.WriteLine($"Compte : {line} invalide !");
                         continue;
@@ -286,61 +291,165 @@ namespace Projet_Formation
             }
             return;
         }
-        public bool Valide_line_operation(string[] operation, ref Operation ope)
+        public bool Valide_line_operation(string operat, ref Operation ope)
         {
-            return false;
+            if (operat == null)
+            {
+                return false;
+            }
+            string[] operation = operat.Split(';');
+            if (operation.Length != 5)
+            {
+                return false;
+            }
+            uint num_cpt;
+            DateTime date_ope = new DateTime();
+            decimal solde_init = 0;
+            uint entree = 0;
+            uint sortie = 0;
+            if (!uint.TryParse(operation[0], out num_cpt) || !DateTime.TryParse(operation[1], out date_ope))
+            {
+                return false;
+            }
+            if (operation[2] == "")
+            {
+                solde_init = 0;
+            }
+            else if (!decimal.TryParse(operation[2], out solde_init))
+            {
+                return false;
+            }
+            if (!uint.TryParse(operation[3], out entree) & !uint.TryParse(operation[4], out sortie))
+            {
+                return false;
+            }
+            ope.Num_cpt = num_cpt;
+            ope.Date_ope = date_ope;
+            ope.Entree = entree;
+            ope.Sortie = sortie;
+            ope.Statut = false;
+            ope.Solde_init = solde_init;
+            return true;
         }
-        public bool Valide_line_transaction(string[] transaction, ref Transaction tr)
+        public bool Valide_line_transaction(string tra, ref Transaction tr)
         {
-            return false;
+            if (tra == null)
+            {
+                return false;
+            }
+            string[] transaction = tra.Split(';');
+            if (transaction.Length != 5)
+            {
+                return false;
+            }
+            uint id;
+            DateTime date = new DateTime();
+            decimal montant;
+            uint expe;
+            uint dest = 0;
+            if (!uint.TryParse(transaction[0], out id) || !DateTime.TryParse(transaction[1], out date) || !decimal.TryParse(transaction[2], out montant))
+            {
+                return false;
+            }
+            if (!uint.TryParse(transaction[3], out expe) & !uint.TryParse(transaction[4], out dest))
+            {
+                return false;
+            }
+            tr.Date = date;
+            tr.Destinataire = dest;
+            tr.Expediteur = expe;
+            tr.Montant = montant;
+            tr.Transaction_ID = id;
+            tr.Statut = false;
+            return true;
         }
         public void Gestion(string gestionnaire, string transactions, string operations, string stat_ope, string stat_tr, string cr)
         {
             Chargement_Gestionnaire(gestionnaire);
             StreamReader transaction = new StreamReader(transactions);
             StreamReader operation = new StreamReader(operations);
-            string[] ope = operation.ReadLine().Split(';');
-            string[] tr = transaction.ReadLine().Split(';');
+            string ope = operation.ReadLine();
+            string tr = transaction.ReadLine();
             do
             {
                 Operation opera = new Operation();
                 Transaction transac = new Transaction();
-                while (!Valide_line_operation(ope, ref opera) && ope != null) ope = operation.ReadLine().Split(';');
-                while (!Valide_line_transaction(tr, ref transac) && tr != null) tr = transaction.ReadLine().Split(';');
+                while (!Valide_line_operation(ope, ref opera) && ope != null)
+                {
+                    Console.WriteLine($"Operation : {ope} invalide !");
+                    ope = operation.ReadLine();
+                }
+                while (!Valide_line_transaction(tr, ref transac) && tr != null)
+                {
+                    Console.WriteLine($"Transaction : {tr} invalide !");
+                    tr = transaction.ReadLine();
+                }
+                opera.Date_ope = ope == null ? DateTime.MaxValue : opera.Date_ope;
+                transac.Date = tr == null ? DateTime.MaxValue : transac.Date;
+                if (ope == null && tr == null) break;
                 if (opera.Date_ope <= transac.Date)
                 {
-                    Traitement_operation(opera);
-                    ope = operation.ReadLine().Split(';');
+                    Traitement_operation(ref opera);
+                    Display_ope(opera);
+                    ope = operation.ReadLine();
                 }
                 else
                 {
-                    Traitement_transaction(transac);
-                    tr = transaction.ReadLine().Split(';');
+                    Traitement_transaction(ref transac);
+                    Display_transac(transac);
+                    tr = transaction.ReadLine();
                 }
-            } while (ope != null && tr != null );
+            } while (!(ope == null && tr == null));
             Compte_rendu_ope(stat_ope);
             Compte_rendu_transac(stat_tr);
             Compte_rendu(cr);
+            Display_comptes();
+            Display_gestionnaires();
             return;
         }
         public void Compte_rendu(string cr)
         {
-            List<string> compte_rendu = new List<string>();
-            foreach (Transaction tr in Historique_Banque)
+            StreamWriter compte_rendu = new StreamWriter(cr);
+            compte_rendu.WriteLine("Statistique :");
+            compte_rendu.WriteLine("Nombre de comptes : {0}", Banque.Count);
+            compte_rendu.WriteLine("Nombre de transactions : {0}", Historique_Banque.Count);
+            compte_rendu.WriteLine("Nombre de réussites : {0}", Historique_Banque.Where(x => x.Statut).Count());
+            compte_rendu.WriteLine("Nombre de d'échecs : {0}", Historique_Banque.Where(x => !x.Statut).Count());
+            decimal total = 0;
+            foreach (Transaction tr in Historique_Banque.Where(x => x.Statut))
             {
-                string statut = tr.Statut ? "OK" : "KO";
-                compte_rendu.Add($"{tr.Transaction_ID};{statut}");
+                total += tr.Montant;
             }
-            File.WriteAllLines(cr, compte_rendu.ToArray());
+            compte_rendu.WriteLine("Montant total des réussites : {0} euros", total);
+            compte_rendu.WriteLine("\nFrais de gestions :");
+            foreach (uint client in Clients.Keys)
+            {
+                compte_rendu.WriteLine($"{client} : {Clients[client].Frai_banquaires} euros");            }
+            compte_rendu.Close();
             return;
         }
         public void Compte_rendu_ope(string stat_ope)
         {
-
+            StreamWriter operation = new StreamWriter(stat_ope);
+            foreach (Operation ope in Historique_ope)
+            {
+                string statut = ope.Statut ? "OK" : "KO";
+                operation.WriteLine($"{ope.Num_cpt};{statut}");
+            }
+            operation.Close();
+            return;
         }
         public void Compte_rendu_transac(string stat_tr)
         {
-
+            using (StreamWriter transaction = new StreamWriter(stat_tr))
+            {
+                foreach (Transaction tr in Historique_Banque)
+                {
+                    string statut = tr.Statut ? "OK" : "KO";
+                    transaction.WriteLine($"{tr.Transaction_ID};{statut}");
+                }
+            }
+            return;
         }
         public void Display_comptes()
         {
@@ -349,6 +458,30 @@ namespace Projet_Formation
                 Console.WriteLine($"Compte n° {compte.Key} :   Solde = {compte.Value.Solde}");
             }
             return;
+        }
+        public void Display_gestionnaires()
+        {
+            foreach (KeyValuePair<uint, Gestionnaire> client in Clients)
+            {
+                string type = client.Value.Type ? "Particulier" : "Entreprise";
+                Console.Write($"{type} n° {client.Key}  Nombre max de transaction {client.Value.tr_max} comptes : ");
+                foreach (uint compte in client.Value.Comptes)
+                {
+                    Console.Write($" {compte}");
+                }
+                Console.WriteLine("");
+            }
+            return;
+        }
+        public void Display_ope(Operation ope)
+        {
+            string statut = ope.Statut ? "OK" : "KO";
+            Console.WriteLine($"Operation sur compte : {ope.Num_cpt}  Date : {ope.Date_ope}  Solde : {ope.Solde_init} Entree : {ope.Entree} Sortie : {ope.Sortie} Statut : {statut}");
+        }
+        public void Display_transac(Transaction tr)
+        {
+            string statut = tr.Statut ? "OK" : "KO";
+            Console.WriteLine($"Transaction {tr.Transaction_ID}  date : {tr.Date} Montant : {tr.Montant} Expediteur : {tr.Expediteur} Destinatiare : {tr.Destinataire} Statut : {statut}");
         }
     }
 }

@@ -13,14 +13,28 @@ namespace Projet_Formation
         {
             Gestion_Compte banque = new Gestion_Compte();
             string path = Directory.GetCurrentDirectory();
-            #region Files
-            // Input
-            string acctPath = path + @"\Comptes_1.csv";
-            string trxnPath = path + @"\Transactions_1.csv";
-            // Output
-            string sttsPath = path + @"\Statut_1.csv";
-            #endregion
-            banque.Gestion(acctPath, trxnPath, sttsPath);
+            for (int i = 1; i < 2; i++)
+            {
+                #region Files
+                // Input
+                string mngrPath = path + $@"\Gestionnaires_{i}.txt";
+                string oprtPath = path + $@"\Comptes_{i}.txt";
+                string trxnPath = path + $@"\Transactions_{i}.txt";
+                // Output
+                string sttsOprtPath = path + $@"\StatutOpe_{i}.txt";
+                string sttsTrxnPath = path + $@"\StatutTra_{i}.txt";
+                string mtrlPath = path + $@"\Metrologie_{i}.txt";
+                #endregion
+
+                #region Main
+                if (File.Exists(mngrPath) && File.Exists(oprtPath) && File.Exists(trxnPath))
+                {
+                    banque.Gestion(mngrPath, trxnPath, oprtPath, sttsOprtPath, sttsTrxnPath, mtrlPath);
+
+                }
+                #endregion
+            }
+            
             // Keep the console window open
             Console.WriteLine("----------------------");
             Console.WriteLine("Press any key to exit.");
