@@ -8,6 +8,6 @@
         public bool IsVisited { get; set; }
 
         public int Statut { get; set; }
-        // 0 : Start, 1 : Lambda, 2 : End
+        // 1 : Start,  0: Lambda, 2 : End
     }
 }

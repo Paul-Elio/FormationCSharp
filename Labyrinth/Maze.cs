@@ -104,41 +104,91 @@ namespace Labyrinth
                     _maze[i, j].Walls = new bool[] { false, false, false, false };
                 }
             }
+            var rand = new Random();
+            _maze[0, rand.Next(0, _columnSize)].Statut = 1;
+            _maze[_lineSize - 1, rand.Next(0, _columnSize)].Statut = 2;
         }
         private int Determine_mur(int i, int j, int vi, int vj)
         {
-            if(j - vj == 0)
+            if (j - vj == 0)
             {
                 return i - vi == 1 ? 0 : 1;
             }
-            else 
+            else
             {
                 return j - vj == 1 ? 2 : 3;
             }
         }
 
-        public KeyValuePair<int, int> Generate()
+        public void Generate()
         {
             Init_maze();
             var rand = new Random();
+            Stack<KeyValuePair<int, int>> pile = new Stack<KeyValuePair<int, int>>();
             int i = rand.Next(0, _lineSize);
             int j = rand.Next(0, _columnSize);
             _maze[i, j].IsVisited = true;
-            var voisins = CloseNeighbors(i, j);
-            var voisins_non_visites = voisins.Where(x => !_maze[x.Key, x.Value].IsVisited);
-            // il reste à prendre un voisin au hazard et toute la suite aussi 
-            Stack<Cell> pile = new Stack<Cell>();
-            return new KeyValuePair<int, int>();
+            Console.WriteLine($" Start : [{i},{j}]");
+            pile.Push(new KeyValuePair<int, int>(i, j));
+            int count = 0;
+            do
+            {
+                do
+                {
+                    var voisins = CloseNeighbors(i, j);
+                    List<KeyValuePair<int, int>> voisins_non_visites = voisins.Where(x => !_maze[x.Key, x.Value].IsVisited).ToList();
+                    count = voisins_non_visites.Count;
+                    if (count != 0)
+                    {
+                        KeyValuePair<int, int> v1 = voisins_non_visites.OrderBy(x => rand.Next()).First();
+                        int vi = v1.Key;
+                        int vj = v1.Value;
+                        Open(i, j, Determine_mur(i, j, vi, vj));
+                        Console.WriteLine($"Passage de [{i},{j}] vers [{vi},{vj}]");
+                        _maze[vi, vj].IsVisited = true;
+                        i = vi;
+                        j = vj;
+                        pile.Push(new KeyValuePair<int, int>(i, j));
+                    }
+                }
+                while (count != 0);
+                KeyValuePair<int, int> v2 = pile.Pop();
+                i = v2.Key;
+                j = v2.Value;
+            } 
+            while (pile.Count != 0);
+            return;
         }
 
         public string DisplayLine(int n)
         {
-            return string.Empty;
+            string line = "";
+            for (int j = 0; j < _columnSize; j++)
+            {
+                line += _maze[n, j].Walls[2] ? "." : "|";
+                if (_maze[n, j].Statut == 2)
+                    line += "  ";
+                else
+                    line += _maze[n, j].Walls[1] ? "  " : "__";
+            }
+            line += "|";
+            return line;
         }
 
-        public List<string> Display(int n)
+        public void Display()
         {
-            return new List<string>();
+
+            for (int i = 0; i < _columnSize; i++)
+            {
+                if (_maze[0, i].Statut == 1) Console.Write("   ");
+                else Console.Write(" __");
+            }
+            Console.WriteLine("");
+            for (int i = 0; i < _lineSize; i++)
+            {
+                Console.WriteLine(DisplayLine(i));
+            }
+            return;
         }
     }
 }

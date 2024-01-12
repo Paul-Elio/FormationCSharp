@@ -417,17 +417,17 @@ namespace Projet_Formation
             compte_rendu.WriteLine("Nombre de comptes : {0}", Banque.Count);
             compte_rendu.WriteLine("Nombre de transactions : {0}", Historique_Banque.Count);
             compte_rendu.WriteLine("Nombre de réussites : {0}", Historique_Banque.Where(x => x.Statut).Count());
-            compte_rendu.WriteLine("Nombre de d'échecs : {0}", Historique_Banque.Where(x => !x.Statut).Count());
+            compte_rendu.WriteLine("Nombre d'échecs : {0}", Historique_Banque.Where(x => !x.Statut).Count());
             decimal total = 0;
             foreach (Transaction tr in Historique_Banque.Where(x => x.Statut))
             {
                 total += tr.Montant;
             }
-            compte_rendu.WriteLine("Montant total des réussites : {0} euros", total);
+            compte_rendu.WriteLine("Montant total des réussites : {0} euros", total.ToString("C2"));
             compte_rendu.WriteLine("\nFrais de gestions :");
             foreach (uint client in Clients.Keys)
             {
-                compte_rendu.WriteLine($"{client} : {Clients[client].Frai_banquaires} euros");
+                compte_rendu.WriteLine($"{client} : {Clients[client].Frai_banquaires.ToString("C2")} euros");
             }
             compte_rendu.Close();
             return;
