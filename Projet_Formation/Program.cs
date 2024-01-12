@@ -11,9 +11,9 @@ namespace Projet_Formation
     {
         static void Main(string[] args)
         {
-            Gestion_Compte banque = new Gestion_Compte();
+
             string path = Directory.GetCurrentDirectory();
-            for (int i = 1; i < 2; i++)
+            for (int i = 1; i < 7; i++)
             {
                 #region Files
                 // Input
@@ -29,6 +29,7 @@ namespace Projet_Formation
                 #region Main
                 if (File.Exists(mngrPath) && File.Exists(oprtPath) && File.Exists(trxnPath))
                 {
+                    Gestion_Compte banque = new Gestion_Compte();
                     banque.Gestion(mngrPath, trxnPath, oprtPath, sttsOprtPath, sttsTrxnPath, mtrlPath);
 
                 }

@@ -99,6 +99,7 @@ namespace Projet_Formation
                     Compte cpt = Banque[num_cpt];
                     cpt.Actif = false;
                     Banque[num_cpt] = cpt;
+                    return true;
                 }
             }
             return false;
@@ -347,7 +348,9 @@ namespace Projet_Formation
             decimal montant;
             uint expe;
             uint dest = 0;
-            if (!uint.TryParse(transaction[0], out id) || !DateTime.TryParse(transaction[1], out date) || !decimal.TryParse(transaction[2], out montant))
+            if (!uint.TryParse(transaction[0], out id) | 
+                !DateTime.TryParse(transaction[1], out date) |
+                !decimal.TryParse(transaction[2], out montant))
             {
                 return false;
             }
@@ -424,7 +427,8 @@ namespace Projet_Formation
             compte_rendu.WriteLine("\nFrais de gestions :");
             foreach (uint client in Clients.Keys)
             {
-                compte_rendu.WriteLine($"{client} : {Clients[client].Frai_banquaires} euros");            }
+                compte_rendu.WriteLine($"{client} : {Clients[client].Frai_banquaires} euros");
+            }
             compte_rendu.Close();
             return;
         }
@@ -453,9 +457,11 @@ namespace Projet_Formation
         }
         public void Display_comptes()
         {
+            string statut;
             foreach (KeyValuePair<uint, Compte> compte in Banque)
             {
-                Console.WriteLine($"Compte n° {compte.Key} :   Solde = {compte.Value.Solde}");
+                statut = compte.Value.Actif ? "Actif" : "Closed";
+                Console.WriteLine($"Compte n° {compte.Key} :   Solde = {compte.Value.Solde} {statut}");
             }
             return;
         }
