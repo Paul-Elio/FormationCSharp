@@ -163,9 +163,9 @@ namespace Projet_Formation
             decimal sum = montant;
             Compte cpt = Banque[num_cpt];
             int nb_tr = cpt.Historique.Count;
-            if (nb_tr >= tr_max - 1)
+            if (nb_tr >= tr_max )
             {
-                for (int i = 1; i <= tr_max - 1; i++)
+                for (int i = 1; i <= tr_max ; i++)
                 {
                     sum += Banque[num_cpt].Historique[nb_tr - i];
                 }
@@ -185,7 +185,7 @@ namespace Projet_Formation
             Compte cpt = Banque[num_cpt];
             int i = cpt.Histo_transac.Count - 1;
             TimeSpan week = TimeSpan.FromDays(7);
-            while (i >= 0 && date - cpt.Histo_transac[i] <= week)
+            while (i >= 0 && date - cpt.Histo_transac[i] < week)
             {
                 sum += cpt.Historique[i];
                 i--;
