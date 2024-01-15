@@ -39,5 +39,7 @@ namespace Projet_Formation
         public List<DateTime> Histo_transac { get; set; }
         public DateTime Date_ouv { get; set; }
         public bool Actif { get; set; }
+        public int Type { get; set; } // 0 : Compte courant 1 : Compte jeune 2 : Livret 3 : Compte à Terme
+        public int Age { get; set; }
     }
 }

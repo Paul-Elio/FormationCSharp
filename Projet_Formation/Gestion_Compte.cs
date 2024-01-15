@@ -15,6 +15,7 @@ namespace Projet_Formation
         public Dictionary<uint, Compte> Banque = new Dictionary<uint, Compte>();
         public List<Transaction> Historique_Banque = new List<Transaction>();
         public Dictionary<uint, Gestionnaire> Clients = new Dictionary<uint, Gestionnaire>();
+        public DateTime today;
         private const int Max_Retrait = 1000;
         private const int Max_week = 2000;
         public int nb_compte = 0;
@@ -61,11 +62,22 @@ namespace Projet_Formation
             }
             return false;
         }
-        public bool Create_compte(uint num_cpt, DateTime date, decimal solde = 0)
+        public bool Create_compte(uint num_cpt, DateTime date,int type, int age, decimal solde = 0)
         {
             if (!Existe_compte(num_cpt) && solde >= 0)
             {
+                if (type == 1)
+                {
+                    if (age < 18 && age >= 8) solde += 10 * age;
+                    else type = 0;                               // à verifier si les moins de 8 ans peuvent avoir un compte courant.
+                }
+                else if (type == 3)
+                {
+                    if (solde < 200) return false;
+                }
                 Compte cpt = new Compte();
+                cpt.Type = type;
+                cpt.Age = age;
                 cpt.Solde = solde;
                 cpt.Historique = new List<decimal>();
                 cpt.Date_ouv = date;
@@ -76,11 +88,11 @@ namespace Projet_Formation
             }
             return false;
         }
-        public bool Add_compte_client(uint num_cli, uint num_cpt, DateTime date, decimal solde = 0)
+        public bool Add_compte_client(uint num_cli, uint num_cpt, DateTime date, int type, int age, decimal solde = 0)
         {
             if (Clients.ContainsKey(num_cli))
             {
-                if (Create_compte(num_cpt, date, solde))
+                if (Create_compte(num_cpt, date, type, age, solde))
                 {
                     Clients[num_cli].Comptes.Add(num_cpt);
                     return true;
@@ -131,9 +143,13 @@ namespace Projet_Formation
             }
             return false;
         }
-        public bool Retrait(uint num_cpt, decimal montant, DateTime date)
+        public bool Retrait(uint num_cpt, decimal montant, DateTime date, bool virement = true)
         {
-            if (montant > 0)
+            if (!virement)
+            {
+                if (Banque[num_cpt].Type == 2 || Banque[num_cpt].Type == 3) return false; 
+            }
+            else if (montant > 0)
             {
                 if (Existe_compte(num_cpt) && Banque[num_cpt].Actif)
                 {
@@ -167,14 +183,24 @@ namespace Projet_Formation
             {
                 for (int i = 1; i <= tr_max ; i++)
                 {
-                    sum += Banque[num_cpt].Historique[nb_tr - i];
+                    sum += cpt.Historique[nb_tr - i];
                 }
             }
             else
             {
-                foreach (decimal mont in Banque[num_cpt].Historique)
+                foreach (decimal mont in cpt.Historique)
                 {
                     sum += mont;
+                }
+            }
+            if (cpt.Type == 1)
+            {
+                if (cpt.Age < 18) return (sum > (decimal)Max_Retrait * (decimal)cpt.Age / (decimal)18);
+                else 
+                {
+                    cpt.Type = 0;
+                    Banque.Add(num_cpt, cpt);
+                    return (sum > Max_Retrait);
                 }
             }
             return (sum > Max_Retrait);
@@ -189,6 +215,16 @@ namespace Projet_Formation
             {
                 sum += cpt.Historique[i];
                 i--;
+            }
+            if (cpt.Type == 1)
+            {
+                if (cpt.Age < 18) return (sum > (decimal)Max_week * (decimal)cpt.Age / (decimal)18);
+                else
+                {
+                    cpt.Type = 0;
+                    Banque.Add(num_cpt, cpt);
+                    return (sum > Max_week);
+                }
             }
             return (sum > Max_week);
         }
